@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -24,10 +24,15 @@ import java.util.logging.Logger
 private const val TAG = "DevicesFragment"
 
 class DevicesFragment : Fragment(R.layout.fragment_devices) {
+    private lateinit var mainViewModel: MainViewModel
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        swipe_refresh_layout.setOnRefreshListener(this::getWeatherData)
+        swipe_refresh_layout.isRefreshing = false
+        getWeatherData()
 
         MyFirebaseDatabase.getUserInfo { status, name ->
             Logger.getLogger(TAG).warning("User Data: $name")
@@ -59,7 +64,9 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
 
                         recycler_view.apply {
                             this.hasFixedSize()
-                            this.layoutManager = GridLayoutManager(requireContext(), 2)
+                            this.layoutManager = StaggeredGridLayoutManager(
+                                2, StaggeredGridLayoutManager.VERTICAL
+                            )
                             this.adapter = deviceAdapter
                         }
                     }
@@ -76,14 +83,18 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                 }
             }
         }
+    }
 
-        val mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+    private fun getWeatherData() {
         mainViewModel.getWeatherData.observe(viewLifecycleOwner, Observer { resource ->
             when (resource.status) {
                 Status.LOADING -> {
                     line_chart_temp_humidity.visibility = View.GONE
+                    swipe_refresh_layout.isRefreshing = true
                 }
                 Status.SUCCESS -> {
+                    swipe_refresh_layout.isRefreshing = false
+
                     resource.data?.let { data ->
                         Logger.getLogger(TAG).warning("Weather Data: $data") // print the data
 
@@ -98,6 +109,8 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                     }
                 }
                 Status.FAILED -> {
+                    swipe_refresh_layout.isRefreshing = false
+
                     line_chart_temp_humidity.visibility = View.GONE
                 }
             }
@@ -146,7 +159,7 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
             tempEntry, "Temperature"
         )
 
-        dataset1.color = android.R.color.holo_red_light
+        dataset1.color = R.color.red
 
         val dataset2 = LineDataSet(
             humidityEntry, "Humidity"
