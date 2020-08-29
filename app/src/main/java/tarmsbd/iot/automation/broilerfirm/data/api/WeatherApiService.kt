@@ -11,6 +11,6 @@ interface WeatherApiService {
     suspend fun getWeatherData(
         @Path("channel_id") channel_id: Int? = Constraints.CHANNEL_ID,
         @Query("api_key") api_key: String? = Constraints.API_KEY,
-        @Query("results") result: Int? = 2
+        @Query("results") result: Int? = 5
     ): WeatherData
 }

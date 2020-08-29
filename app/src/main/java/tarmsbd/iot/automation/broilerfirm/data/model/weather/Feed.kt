@@ -9,5 +9,9 @@ data class Feed(
     @SerializedName("entry_id")
     val entryId: Int?,
     @SerializedName("status")
-    val status: Any?
+    val status: Any?,
+    @SerializedName("field1")
+    val temp: Float?,
+    @SerializedName("field2")
+    val humidity: Float?
 )

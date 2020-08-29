@@ -7,4 +7,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="light">Light</string>
     <string name="off">off</string>
+    <string name="my_devices">My Devices</string>
+    <string name="celsius_symbol">°C</string>
+    <string name="zero">0</string>
 </resources>

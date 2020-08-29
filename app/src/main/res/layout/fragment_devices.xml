@@ -7,10 +7,10 @@
     tools:context=".ui.main.view.fragments.DevicesFragment">
 
     <LinearLayout
-        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/root"
@@ -30,6 +30,7 @@
                 android:id="@+id/temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:hint="@string/zero"
                 android:textSize="40sp"
                 app:layout_constraintEnd_toStartOf="@id/temp_unit"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:text="@string/celsius_symbol"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/temp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -50,13 +52,30 @@
             android:layout_marginTop="10dp"
             android:background="@color/colorPrimary" />
 
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart_temp_humidity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:layout_marginTop="10dp"
+            android:focusable="false"
+            android:minHeight="150dp" />
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/my_devices" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:overScrollMode="never"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="3"
             tools:listitem="@layout/item_device" />
     </LinearLayout>
