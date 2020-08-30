@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -36,7 +37,7 @@ class DeviceAdapter(private val context: Context?) :
     }
 
     class DeviceHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        val card = view.card
+        val card: CardView = view.card
         fun bind(device: Device?, context: Context?) {
             view.device_name.text = device?.name
             context?.let {

@@ -95,11 +95,8 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
             when (resource.status) {
                 Status.LOADING -> {
                     line_chart_temp_humidity.visibility = View.GONE
-                    swipe_refresh_layout.isRefreshing = true
                 }
                 Status.SUCCESS -> {
-                    swipe_refresh_layout.isRefreshing = false
-
                     resource.data?.let { data ->
                         Logger.getLogger(TAG).warning("Weather Data: $data") // print the data
 
@@ -114,7 +111,6 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                     }
                 }
                 Status.FAILED -> {
-                    swipe_refresh_layout.isRefreshing = false
                     line_chart_temp_humidity.visibility = View.GONE
                 }
             }
