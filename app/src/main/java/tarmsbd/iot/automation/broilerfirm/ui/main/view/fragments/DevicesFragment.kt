@@ -156,13 +156,13 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
             index += 5
         }
         val dataset1 = LineDataSet(
-            tempEntry, "Temperature"
+            tempEntry, "Temperature (°C)"
         )
 
         dataset1.color = R.color.red
 
         val dataset2 = LineDataSet(
-            humidityEntry, "Humidity"
+            humidityEntry, "Humidity (%)"
         )
 
         val dataSets = mutableListOf<ILineDataSet>(

@@ -8,12 +8,10 @@ import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.ui.main.adapter.FragmentsContainer
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.DevicesFragment
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.SettingsFragment
-import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.UsesFragment
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val fragments = mutableListOf(
         DevicesFragment(),
-        UsesFragment(),
         SettingsFragment()
     )
 
@@ -40,8 +38,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 override fun onPageSelected(position: Int) {
                     when (position) {
                         0 -> bottom_nav.selectedItemId = R.id.devices
-                        1 -> bottom_nav.selectedItemId = R.id.uses
-                        2 -> bottom_nav.selectedItemId = R.id.settings
+                        1 -> bottom_nav.selectedItemId = R.id.settings
                     }
                 }
             })
@@ -53,12 +50,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         container.currentItem = 0
                         fragmentsContainer?.notifyDataSetChanged()
                     }
-                    R.id.uses -> {
-                        container.currentItem = 1
-                        fragmentsContainer?.notifyDataSetChanged()
-                    }
                     R.id.settings -> {
-                        container.currentItem = 2
+                        container.currentItem = 1
                         fragmentsContainer?.notifyDataSetChanged()
                     }
                 }

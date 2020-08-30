@@ -5,10 +5,7 @@
         android:icon="@drawable/ic_home_outline"
         android:id="@+id/devices"
         android:title="Home" />
-    <item
-        android:icon="@drawable/ic_pie_chart_outline"
-        android:id="@+id/uses"
-        android:title="Uses" />
+
     <item
         android:icon="@drawable/ic_settings_2_outline"
         android:id="@+id/settings"
