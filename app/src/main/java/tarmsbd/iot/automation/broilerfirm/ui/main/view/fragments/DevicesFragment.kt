@@ -8,13 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.fragment_devices.*
 import tarmsbd.iot.automation.broilerfirm.R
-import tarmsbd.iot.automation.broilerfirm.data.repo.MyFirebaseDatabase
+import tarmsbd.iot.automation.broilerfirm.data.model.Device
 import tarmsbd.iot.automation.broilerfirm.ui.main.adapter.DeviceAdapter
 import tarmsbd.iot.automation.broilerfirm.ui.main.viewmodel.MainViewModel
 import tarmsbd.iot.automation.broilerfirm.utils.OnItemClickListener
@@ -30,35 +31,41 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        swipe_refresh_layout.setOnRefreshListener(this::getWeatherData)
-        swipe_refresh_layout.isRefreshing = false
-        getWeatherData()
 
-        MyFirebaseDatabase.getUserInfo { status, name ->
-            Logger.getLogger(TAG).warning("User Data: $name")
-            if (status == Status.SUCCESS) {
-                greetings.text = "Good Day,\n$name"
+        mainViewModel.getCurrentUserData.observe(viewLifecycleOwner, Observer {
+            Logger.getLogger(TAG).warning("User Data: ${it.data}")
+            if (it.status == Status.SUCCESS) {
+                greetings.text = "Good Day,\n${it.data}"
             } else {
                 Log.d(TAG, "onViewCreated: Failed to load data!")
 //                Toast.makeText(requireContext(), "Failed to load data!", Toast.LENGTH_SHORT)
 //                    .show()
             }
-        }
+        })
 
-        MyFirebaseDatabase.getCurrentData { status, devices ->
-            when (status) {
+        mainViewModel.getDevicesData.observe(viewLifecycleOwner, Observer { resource ->
+            when (resource.status) {
                 Status.SUCCESS -> {
                     Log.d(TAG, "onViewCreated: DONE!")
-                    Logger.getLogger(TAG).warning("Data: $devices")
+                    resource.data?.let { deviceData ->
+                        val devices = mutableListOf<Device>()
+                        deviceData.map {
+                            devices.add(it.device)
+                        }
+                        Logger.getLogger(TAG).warning("Data: $devices")
 
-                    devices?.let {
                         val deviceAdapter = DeviceAdapter(requireContext())
                         deviceAdapter.submitList(devices)
                         deviceAdapter.onItemClickListener(object :
                             OnItemClickListener {
                             override fun onItemClicked(p: Int) {
                                 devices[p].status = !devices[p].status!!
-                                deviceAdapter.notifyItemChanged(p)
+                                mainViewModel.updateDeviceStatus(deviceData[p])
+                                    .observe(viewLifecycleOwner,
+                                        Observer { device ->
+                                            devices[p].status = device?.data?.status!!
+                                            deviceAdapter.notifyItemChanged(p)
+                                        })
                             }
                         })
 
@@ -82,10 +89,8 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
 
                 }
             }
-        }
-    }
+        })
 
-    private fun getWeatherData() {
         mainViewModel.getWeatherData.observe(viewLifecycleOwner, Observer { resource ->
             when (resource.status) {
                 Status.LOADING -> {
@@ -110,7 +115,6 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                 }
                 Status.FAILED -> {
                     swipe_refresh_layout.isRefreshing = false
-
                     line_chart_temp_humidity.visibility = View.GONE
                 }
             }
@@ -174,7 +178,12 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
             dataSets
         )
 
+        val description = Description()
+        description.text = "Temperature and Humidity data"
+        description.setPosition(0f, 0f)
+
         line_chart_temp_humidity.data = lineData
+        line_chart_temp_humidity.description = description
         line_chart_temp_humidity.invalidate() // refresh data
     }
 }
