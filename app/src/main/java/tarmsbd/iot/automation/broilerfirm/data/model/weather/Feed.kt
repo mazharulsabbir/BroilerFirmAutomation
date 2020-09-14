@@ -13,5 +13,17 @@ data class Feed(
     @SerializedName("field1")
     val temp: Float?,
     @SerializedName("field2")
-    val humidity: Float?
+    val humidity: Float?,
+    @SerializedName("field3")
+    val device_1: Float?,
+    @SerializedName("field4")
+    val device_2: Float?,
+    @SerializedName("field5")
+    val device_3: Float?,
+    @SerializedName("field6")
+    val device_4: Float?,
+    @SerializedName("field7")
+    val device_5: Float?,
+    @SerializedName("field8")
+    val device_6: Float?
 )

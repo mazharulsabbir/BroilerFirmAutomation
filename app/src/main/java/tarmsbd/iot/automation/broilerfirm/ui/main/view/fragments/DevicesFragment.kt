@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -16,10 +16,12 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.fragment_devices.*
 import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.data.model.Device
+import tarmsbd.iot.automation.broilerfirm.data.model.DeviceData
 import tarmsbd.iot.automation.broilerfirm.ui.main.adapter.DeviceAdapter
 import tarmsbd.iot.automation.broilerfirm.ui.main.viewmodel.MainViewModel
 import tarmsbd.iot.automation.broilerfirm.utils.OnItemClickListener
 import tarmsbd.iot.automation.broilerfirm.utils.Status
+import java.util.*
 import java.util.logging.Logger
 
 private const val TAG = "DevicesFragment"
@@ -38,8 +40,6 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                 greetings.text = "Good Day,\n${it.data}"
             } else {
                 Log.d(TAG, "onViewCreated: Failed to load data!")
-//                Toast.makeText(requireContext(), "Failed to load data!", Toast.LENGTH_SHORT)
-//                    .show()
             }
         })
 
@@ -54,28 +54,7 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                         }
                         Logger.getLogger(TAG).warning("Data: $devices")
 
-                        val deviceAdapter = DeviceAdapter(requireContext())
-                        deviceAdapter.submitList(devices)
-                        deviceAdapter.onItemClickListener(object :
-                            OnItemClickListener {
-                            override fun onItemClicked(p: Int) {
-                                devices[p].status = !devices[p].status!!
-                                mainViewModel.updateDeviceStatus(deviceData[p])
-                                    .observe(viewLifecycleOwner,
-                                        Observer { device ->
-                                            devices[p].status = device?.data?.status!!
-                                            deviceAdapter.notifyItemChanged(p)
-                                        })
-                            }
-                        })
-
-                        recycler_view.apply {
-                            this.hasFixedSize()
-                            this.layoutManager = StaggeredGridLayoutManager(
-                                2, StaggeredGridLayoutManager.VERTICAL
-                            )
-                            this.adapter = deviceAdapter
-                        }
+                        setupView(deviceData, devices)
                     }
                 }
 
@@ -114,8 +93,36 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
                     line_chart_temp_humidity.visibility = View.GONE
                 }
             }
-
         })
+    }
+
+    private fun setupView(deviceData: List<DeviceData>, devices: MutableList<Device>) {
+        val deviceAdapter = DeviceAdapter(requireContext())
+        deviceAdapter.submitList(devices)
+        deviceAdapter.onItemClickListener(object :
+            OnItemClickListener {
+            override fun onItemClicked(p: Int) {
+                devices[p].status = !devices[p].status!!
+                devices[p].on_off_time = Date().time
+
+                mainViewModel.updateDeviceStatus(deviceData[p])
+                    .observe(viewLifecycleOwner,
+                        Observer { device ->
+                            devices[p].status = device?.data?.status!!
+                            deviceAdapter.notifyItemChanged(p)
+                        })
+            }
+        })
+
+        // setup recycler view
+        recycler_view.apply {
+            this.hasFixedSize()
+//                            this.layoutManager = StaggeredGridLayoutManager(
+//                                2, StaggeredGridLayoutManager.VERTICAL
+//                            )
+            this.layoutManager = LinearLayoutManager(context)
+            this.adapter = deviceAdapter
+        }
     }
 
     private fun setupLineChartData(tempData: List<Float?>, humidity: List<Float?>) {
