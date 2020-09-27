@@ -87,6 +87,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:overScrollMode="never"
+                android:paddingBottom="50dp"
+                android:clipToPadding="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_device" />
         </LinearLayout>

@@ -13,6 +13,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_devices.*
 import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.data.model.Device
@@ -26,22 +27,33 @@ import java.util.logging.Logger
 
 private const val TAG = "DevicesFragment"
 
+@SuppressLint("SetTextI18n")
 class DevicesFragment : Fragment(R.layout.fragment_devices) {
     private lateinit var mainViewModel: MainViewModel
 
-    @SuppressLint("SetTextI18n")
+    override fun onResume() {
+        super.onResume()
+        FirebaseAuth.getInstance().currentUser?.let {
+            greetings.text = "Good Day,\n${it.displayName}"
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        mainViewModel.getCurrentUserData.observe(viewLifecycleOwner, Observer {
-            Logger.getLogger(TAG).warning("User Data: ${it.data}")
-            if (it.status == Status.SUCCESS) {
-                greetings.text = "Good Day,\n${it.data}"
-            } else {
-                Log.d(TAG, "onViewCreated: Failed to load data!")
-            }
-        })
+        FirebaseAuth.getInstance().currentUser?.let {
+            greetings.text = "Good Day,\n${it.displayName}"
+        }
+
+//        mainViewModel.getCurrentUserData.observe(viewLifecycleOwner, Observer {
+//            Logger.getLogger(TAG).warning("User Data: ${it.data}")
+//            if (it.status == Status.SUCCESS) {
+//                greetings.text = "Good Day,\n${it.data}"
+//            } else {
+//                Log.d(TAG, "onViewCreated: Failed to load data!")
+//            }
+//        })
 
         mainViewModel.getDevicesData.observe(viewLifecycleOwner, Observer { resource ->
             when (resource.status) {

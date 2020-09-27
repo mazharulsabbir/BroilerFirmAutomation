@@ -4,13 +4,11 @@
 
         <EditTextPreference
             app:key="username"
-            app:title="Full Name"
-            app:useSimpleSummaryProvider="true" />
+            app:title="Full Name"/>
 
-        <EditTextPreference
+        <Preference
             app:key="email_address"
-            app:title="@string/email_address"
-            app:useSimpleSummaryProvider="true" />
+            app:title="@string/email_address" />
 
         <Preference
             app:key="request_password_change"
