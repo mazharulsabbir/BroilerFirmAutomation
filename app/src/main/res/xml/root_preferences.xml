@@ -1,19 +1,21 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="User Info">
 
         <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
+            app:key="username"
+            app:title="Full Name"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+        <EditTextPreference
+            app:key="email_address"
+            app:title="@string/email_address"
             app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:key="request_password_change"
+            app:summary="An password change instruction will be sent to your email."
+            app:title="Change Password" />
 
     </PreferenceCategory>
 
@@ -21,14 +23,15 @@
 
         <SwitchPreferenceCompat
             app:key="sync"
-            app:title="@string/sync_title" />
+            app:title="Sync Temperature &amp; Humidity" />
 
-        <SwitchPreferenceCompat
+        <ListPreference
             app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+            app:entries="@array/sync_entries"
+            app:entryValues="@array/sync_values"
+            app:key="sync_time"
+            app:title="Sync in every"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
