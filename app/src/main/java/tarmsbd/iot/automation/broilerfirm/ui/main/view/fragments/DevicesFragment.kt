@@ -117,9 +117,6 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
         // setup recycler view
         recycler_view.apply {
             this.hasFixedSize()
-//                            this.layoutManager = StaggeredGridLayoutManager(
-//                                2, StaggeredGridLayoutManager.VERTICAL
-//                            )
             this.layoutManager = LinearLayoutManager(context)
             this.adapter = deviceAdapter
         }

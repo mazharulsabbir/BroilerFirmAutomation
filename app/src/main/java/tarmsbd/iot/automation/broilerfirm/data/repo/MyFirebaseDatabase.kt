@@ -82,7 +82,8 @@ object MyFirebaseDatabase {
             updateDeviceStatus.value = Resource.loading(null)
 
             val mRef = ref.child("user/${firebaseUser.uid}/firm_data/devices/${device.key}")
-            mRef.updateChildren(device.device.toMap()).addOnCompleteListener { task: Task<Void> ->
+            mRef.updateChildren(device.device.toMap())
+                .addOnCompleteListener { task: Task<Void> ->
                 if (task.isComplete) {
                     updateDeviceStatus.value = Resource.success(device.device)
                 } else if (task.isCanceled) {
