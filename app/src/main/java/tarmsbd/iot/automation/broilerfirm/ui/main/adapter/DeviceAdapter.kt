@@ -39,6 +39,7 @@ class DeviceAdapter(private val context: Context?) :
             view.device_name.text = device?.name
             device?.status?.let { status ->
                 view.device_status.text = if (status) "ON" else "OFF"
+                view.imageView.visibility = if (status) View.VISIBLE else View.INVISIBLE
             }
             view.on_off_time.text = device?.on_off_time?.let { dateTimeConverter(it) }
         }
