@@ -4,7 +4,7 @@
 
         <EditTextPreference
             app:key="username"
-            app:title="Full Name"/>
+            app:title="Full Name" />
 
         <Preference
             app:key="email_address"
@@ -20,10 +20,12 @@
     <PreferenceCategory app:title="@string/sync_header">
 
         <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:key="sync"
             app:title="Sync Temperature &amp; Humidity" />
 
         <ListPreference
+            app:defaultValue="5"
             app:dependency="sync"
             app:entries="@array/sync_entries"
             app:entryValues="@array/sync_values"

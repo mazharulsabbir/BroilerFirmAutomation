@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -82,30 +83,46 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
             }
         })
 
-        mainViewModel.getWeatherData.observe(viewLifecycleOwner, Observer { resource ->
-            when (resource.status) {
-                Status.LOADING -> {
-                    line_chart_temp_humidity.visibility = View.GONE
-                }
-                Status.SUCCESS -> {
-                    resource.data?.let { data ->
-                        Logger.getLogger(TAG).warning("Weather Data: $data") // print the data
+        mainViewModel.getWeatherData(requireContext()).observe(
+            viewLifecycleOwner,
+            Observer { resource ->
+                when (resource.status) {
+                    Status.LOADING -> {
+//                    line_chart_temp_humidity.visibility = View.VISIBLE
+                    }
+                    Status.SUCCESS -> {
+                        resource.data?.let { data ->
+                            Logger.getLogger(TAG).warning("Weather Data: $data") // print the data
 
-                        val tempData = mutableListOf<Float>()
-                        val humidityData = mutableListOf<Float>()
-                        data.feeds?.map {
-                            it.temp?.let { temp -> tempData.add(temp) }
-                            it.humidity?.let { humidity -> humidityData.add(humidity) }
+                            val tempData = mutableListOf<Float>()
+                            val humidityData = mutableListOf<Float>()
+                            data.feeds?.map {
+                                it.temp?.let { temp -> tempData.add(temp) }
+                                it.humidity?.let { humidity -> humidityData.add(humidity) }
+                            }
+
+                            setupLineChartData(tempData, humidityData)
                         }
-
-                        setupLineChartData(tempData, humidityData)
+                    }
+                    Status.FAILED -> {
+                        Toast.makeText(
+                            context,
+                            "Failed to load temperature & humidity data.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+//                    line_chart_temp_humidity.visibility = View.GONE
                     }
                 }
-                Status.FAILED -> {
-                    line_chart_temp_humidity.visibility = View.GONE
-                }
-            }
-        })
+            })
+
+
+//        sharedPref.registerOnSharedPreferenceChangeListener { sharedPreferences, _ ->
+//            val mTempHumiditySync = sharedPreferences.getBoolean("sync", true)
+//            val mTempHumiditySyncTime = sharedPreferences.getString("sync_time", "5").toString()
+//
+//            Logger.getLogger(TAG)
+//                .warning("Bool $mTempHumiditySync > Time: $mTempHumiditySyncTime")
+//        }
     }
 
     private fun setupView(deviceData: List<DeviceData>, devices: MutableList<Device>) {

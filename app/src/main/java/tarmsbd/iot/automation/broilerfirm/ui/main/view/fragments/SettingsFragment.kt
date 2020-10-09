@@ -1,14 +1,15 @@
 package tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
-import androidx.preference.EditTextPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.*
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import tarmsbd.iot.automation.broilerfirm.R
+
+private const val TAG = "SettingsFragment"
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
