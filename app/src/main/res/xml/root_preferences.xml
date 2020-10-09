@@ -10,10 +10,10 @@
             app:key="email_address"
             app:title="@string/email_address" />
 
-        <Preference
+        <EditTextPreference
             app:key="request_password_change"
-            app:summary="An password change instruction will be sent to your email."
-            app:title="Change Password" />
+            app:summary="Update your existing password with new password"
+            app:title="Update Password" />
 
     </PreferenceCategory>
 
@@ -33,6 +33,12 @@
             app:title="Sync in every"
             app:useSimpleSummaryProvider="true" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <Preference
+            app:key="logout"
+            app:title="Logout" />
     </PreferenceCategory>
 
 </PreferenceScreen>

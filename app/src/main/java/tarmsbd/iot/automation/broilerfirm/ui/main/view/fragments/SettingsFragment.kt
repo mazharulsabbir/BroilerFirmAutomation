@@ -1,13 +1,16 @@
 package tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import androidx.preference.*
+import androidx.preference.EditTextPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import tarmsbd.iot.automation.broilerfirm.R
+import tarmsbd.iot.automation.broilerfirm.ui.auth.view.AuthActivity
 
 private const val TAG = "SettingsFragment"
 
@@ -37,5 +40,32 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val emailAddress = findPreference<Preference>("email_address")
         emailAddress?.summary = user?.email
+
+        val changePassword = findPreference<Preference>("request_password_change")
+        changePassword?.setOnPreferenceChangeListener { _, newValue ->
+            FirebaseAuth.getInstance().currentUser
+                ?.updatePassword(newValue.toString())
+                ?.addOnCompleteListener {
+                    if (it.isSuccessful)
+                        Toast.makeText(context, "Password Changed!", Toast.LENGTH_SHORT).show()
+                    else {
+                        it.exception?.printStackTrace()
+                        Toast.makeText(context, it.exception?.localizedMessage, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+
+            return@setOnPreferenceChangeListener true
+        }
+
+        val logout = findPreference<Preference>("logout")
+        logout?.setOnPreferenceClickListener {
+
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(context, AuthActivity::class.java))
+            requireActivity().finish()
+
+            return@setOnPreferenceClickListener true
+        }
     }
 }
