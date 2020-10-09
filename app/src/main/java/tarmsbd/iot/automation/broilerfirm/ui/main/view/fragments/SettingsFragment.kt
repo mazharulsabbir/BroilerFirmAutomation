@@ -8,6 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.UserProfileChangeRequest
 import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.ui.auth.view.AuthActivity
@@ -40,6 +41,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val emailAddress = findPreference<Preference>("email_address")
         emailAddress?.summary = user?.email
+        emailAddress?.setOnPreferenceChangeListener { _, newValue ->
+            FirebaseAuth.getInstance().currentUser
+                ?.updateEmail(newValue.toString())
+                ?.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        emailAddress.summary = newValue.toString()
+                        Toast.makeText(context, "Email Changed!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        if (it.exception is FirebaseAuthRecentLoginRequiredException) {
+                            Toast.makeText(
+                                context,
+                                "Please login again and retry to change email address",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                it.exception?.localizedMessage,
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                        it.exception?.printStackTrace()
+
+                    }
+                }
+
+            return@setOnPreferenceChangeListener true
+        }
 
         val changePassword = findPreference<Preference>("request_password_change")
         changePassword?.setOnPreferenceChangeListener { _, newValue ->

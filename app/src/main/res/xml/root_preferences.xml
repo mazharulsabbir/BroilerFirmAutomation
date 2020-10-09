@@ -6,7 +6,7 @@
             app:key="username"
             app:title="Full Name" />
 
-        <Preference
+        <EditTextPreference
             app:key="email_address"
             app:title="@string/email_address" />
 
