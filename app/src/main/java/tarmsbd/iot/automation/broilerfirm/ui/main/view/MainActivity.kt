@@ -1,6 +1,10 @@
 package tarmsbd.iot.automation.broilerfirm.ui.main.view
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -8,10 +12,15 @@ import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.ui.main.adapter.FragmentsContainer
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.DevicesFragment
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.SettingsFragment
+import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.TaskFragment
+import tarmsbd.iot.automation.broilerfirm.ui.notification.view.NotificationActivity
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val fragments = mutableListOf(
         DevicesFragment(),
+        TaskFragment(),
         SettingsFragment()
     )
 
@@ -19,6 +28,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSupportActionBar(toolbar)
+
         fragmentsContainer = FragmentsContainer(supportFragmentManager, fragments)
         container.apply {
             this.adapter = fragmentsContainer
@@ -37,8 +48,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 override fun onPageSelected(position: Int) {
                     when (position) {
-                        0 -> bottom_nav.selectedItemId = R.id.devices
-                        1 -> bottom_nav.selectedItemId = R.id.settings
+                        0 -> bottom_nav.selectedItemId = R.id.menu_devices
+                        1 -> bottom_nav.selectedItemId = R.id.menu_task
+                        2 -> bottom_nav.selectedItemId = R.id.menu_settings
                     }
                 }
             })
@@ -46,17 +58,36 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         bottom_nav.apply {
             this.setOnNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.devices -> {
+                    R.id.menu_devices -> {
                         container.currentItem = 0
                         fragmentsContainer?.notifyDataSetChanged()
                     }
-                    R.id.settings -> {
+                    R.id.menu_task -> {
                         container.currentItem = 1
+                        fragmentsContainer?.notifyDataSetChanged()
+                    }
+                    R.id.menu_settings -> {
+                        container.currentItem = 2
                         fragmentsContainer?.notifyDataSetChanged()
                     }
                 }
                 return@setOnNavigationItemSelectedListener true
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_notification) {
+            Log.d(TAG, "onOptionsItemSelected: Navigate to notification activity")
+            startActivity(Intent(this, NotificationActivity::class.java))
+        } else {
+            Log.d(TAG, "onOptionsItemSelected: ${item.title}")
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

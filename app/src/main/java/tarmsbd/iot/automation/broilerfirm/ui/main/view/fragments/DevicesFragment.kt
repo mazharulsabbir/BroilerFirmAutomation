@@ -47,15 +47,6 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
             greetings.text = "Good Day,\n${it.displayName}"
         }
 
-//        mainViewModel.getCurrentUserData.observe(viewLifecycleOwner, Observer {
-//            Logger.getLogger(TAG).warning("User Data: ${it.data}")
-//            if (it.status == Status.SUCCESS) {
-//                greetings.text = "Good Day,\n${it.data}"
-//            } else {
-//                Log.d(TAG, "onViewCreated: Failed to load data!")
-//            }
-//        })
-
         mainViewModel.getDevicesData.observe(viewLifecycleOwner, Observer { resource ->
             when (resource.status) {
                 Status.SUCCESS -> {

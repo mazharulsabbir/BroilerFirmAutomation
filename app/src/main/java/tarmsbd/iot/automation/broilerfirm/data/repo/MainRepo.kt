@@ -12,11 +12,20 @@ private const val TAG = "MainRepo"
 
 object MainRepo {
     private val retrofitBuilder = RetrofitBuilder
+
     fun getWeatherData(context: Context) = liveData {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+//        sharedPreferences.registerOnSharedPreferenceChangeListener { sharedPreferences, _ ->
+//            val mTempHumiditySync = sharedPreferences.getBoolean("sync", true)
+//            val mTempHumiditySyncTime = sharedPreferences.getString("sync_time", "5").toString()
+//
+//            Logger.getLogger(TAG)
+//                .warning("Bool $mTempHumiditySync > Time: $mTempHumiditySyncTime")
+//        }
         emit(Resource.loading(null))
         try {
             var mTempHumiditySync: Boolean = true
+
             do {
                 if (mTempHumiditySync)
                     emit(Resource.success(retrofitBuilder.weatherApiService.getWeatherData()))

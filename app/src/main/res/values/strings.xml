@@ -25,4 +25,5 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="status_change_time_hint">Status Change Time</string>
+    <string name="add_new">Add New</string>
 </resources>

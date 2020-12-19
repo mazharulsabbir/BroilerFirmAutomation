@@ -3,11 +3,15 @@
 
     <item
         android:icon="@drawable/ic_home_outline"
-        android:id="@+id/devices"
+        android:id="@+id/menu_devices"
         android:title="Home" />
+
+    <item android:id="@+id/menu_task"
+        android:icon="@drawable/ic_baseline_list_alt_24"
+        android:title="Task"/>
 
     <item
         android:icon="@drawable/ic_settings_2_outline"
-        android:id="@+id/settings"
+        android:id="@+id/menu_settings"
         android:title="More" />
 </menu>
