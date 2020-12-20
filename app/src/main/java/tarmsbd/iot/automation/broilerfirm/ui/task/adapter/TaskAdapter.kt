@@ -1,4 +1,4 @@
-package tarmsbd.iot.automation.broilerfirm.ui.main.adapter
+package tarmsbd.iot.automation.broilerfirm.ui.task.adapter
 
 import android.view.LayoutInflater
 import android.view.View

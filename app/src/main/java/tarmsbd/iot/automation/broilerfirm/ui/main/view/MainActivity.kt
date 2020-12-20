@@ -12,7 +12,7 @@ import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.ui.main.adapter.FragmentsContainer
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.DevicesFragment
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.SettingsFragment
-import tarmsbd.iot.automation.broilerfirm.ui.main.view.fragments.TaskFragment
+import tarmsbd.iot.automation.broilerfirm.ui.task.view.fragments.TaskFragment
 import tarmsbd.iot.automation.broilerfirm.ui.notification.view.NotificationActivity
 
 private const val TAG = "MainActivity"

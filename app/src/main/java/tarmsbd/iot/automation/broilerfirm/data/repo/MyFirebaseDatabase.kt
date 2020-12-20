@@ -1,12 +1,13 @@
 package tarmsbd.iot.automation.broilerfirm.data.repo
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import tarmsbd.iot.automation.broilerfirm.data.model.Device
 import tarmsbd.iot.automation.broilerfirm.data.model.DeviceData
+import tarmsbd.iot.automation.broilerfirm.data.model.Task
 import tarmsbd.iot.automation.broilerfirm.utils.Resource
 import java.util.logging.Logger
 
@@ -83,15 +84,51 @@ object MyFirebaseDatabase {
 
             val mRef = ref.child("user/${firebaseUser.uid}/firm_data/devices/${device.key}")
             mRef.updateChildren(device.device.toMap())
-                .addOnCompleteListener { task: Task<Void> ->
-                if (task.isComplete) {
-                    updateDeviceStatus.value = Resource.success(device.device)
-                } else if (task.isCanceled) {
-                    task.exception?.message?.let {
-                        updateDeviceStatus.value = Resource.error(null, it)
+                .addOnCompleteListener { task ->
+                    if (task.isComplete) {
+                        updateDeviceStatus.value = Resource.success(device.device)
+                    } else if (task.isCanceled) {
+                        task.exception?.message?.let {
+                            updateDeviceStatus.value = Resource.error(null, it)
+                        }
                     }
                 }
-            }
+        }
+    }
+
+    fun addNewTask(task: Task) {
+        user?.let { firebaseUser ->
+            updateDeviceStatus.value = Resource.loading(null)
+
+            val mRef = ref.child("user/${firebaseUser.uid}/task")
+            val key = mRef.push().key!!
+            task.id = key
+            mRef.child(key).setValue(task.toMap())
+        }
+    }
+
+    fun getAllTask(task: (List<Task>) -> Unit) {
+        user?.let { firebaseUser ->
+            updateDeviceStatus.value = Resource.loading(null)
+
+            val mRef = ref.child("user/${firebaseUser.uid}/task")
+            mRef.orderByChild("date").addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.hasChildren()) {
+                        val taskList = mutableListOf<Task>()
+                        snapshot.children.forEach {
+                            val taskFromSnapshot = it.getValue(Task::class.java)
+                            taskFromSnapshot?.let { mTask -> taskList.add(mTask) }
+                        }
+                        task(taskList)
+                    }
+                }
+
+                override fun onCancelled(p0: DatabaseError) {
+                    Log.e(TAG, "onCancelled: ", p0.toException())
+                }
+
+            })
         }
     }
 }

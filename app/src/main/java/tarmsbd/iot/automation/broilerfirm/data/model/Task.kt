@@ -2,14 +2,15 @@ package tarmsbd.iot.automation.broilerfirm.data.model
 
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
+import java.util.*
 
 @IgnoreExtraProperties
 data class Task(
-    val id: String?,
-    val name: String?,
-    val date: Long?,
-    val createdAt: Long?,
-    val isCompleted: Boolean?
+    var id: String? = "Task",
+    val name: String? = "No Name",
+    val date: Long? = Date().time,
+    val createdAt: Long? = Date().time,
+    val isCompleted: Boolean? = false
 ) {
     constructor() : this(null, null, null, null, null)
 

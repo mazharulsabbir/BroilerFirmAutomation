@@ -8,8 +8,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         tools:listitem="@layout/item_task"
+        android:overScrollMode="never"
         android:id="@+id/recycler_view_task"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
