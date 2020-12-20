@@ -41,7 +41,7 @@ size_t childPathSize = 4;
 void streamCallback(MultiPathStreamData stream)
 {
   Serial.println();
-  Serial.println("Stream Data1 available...");
+  Serial.println("Stream Data available...");
 
   size_t numChild = sizeof(childPath) / sizeof(childPath[0]);
 
@@ -60,36 +60,38 @@ void streamCallback(MultiPathStreamData stream)
       {
         json.iteratorGet(i, type, key, value);
         if (key == "status" && path == "/device1") {
-          Serial.print("Fan Status: ");
-          Serial.println(value);
-          if(value){
-           Serial1.print(101);
-          }else{
-            Serial1.print(102);
+          //          Serial.println(value);
+          if (String(value) == "true") {
+            Serial1.print(7);
+            Serial.print("Fan Status: Enabled");
+          } else {
+            Serial1.print(8);
+            Serial.print("Fan Status: Disabled");
           }
         } else if (key == "status" && path == "/device2") {
-          Serial.print("Light Status: ");
-          Serial.println(value);
-          if(value){
-           Serial1.print(103);
-          }else{
-            Serial1.print(104);
+          //          Serial.println(value);
+          if (String(value) == "true") {
+            Serial1.print(1);
+            Serial.print("Light Status: Enabled");
+          } else {
+            Serial1.print(2);
+            Serial.print("Light Status: Disabled");
           }
         } else if (key == "status" && path == "/device3") {
-          Serial.print("Motor Status: ");
-          Serial.println(value);
-          if(value){
-           Serial1.print(106);
-          }else{
-            Serial1.print(105);
+          if (String(value) == "true") {
+            Serial1.print(3);
+            Serial.print("Motor Status: Enabled");
+          } else {
+            Serial1.print(4);
+            Serial.print("Motor Status: Disabled");
           }
         } else if (key == "status" && path == "/device4") {
-          Serial.print("Water Pump Status: ");
-          Serial.println(value);
-          if(value){
-           Serial1.print(107);
-          }else{
-            Serial1.print(108);
+          if (String(value) == "true") {
+            Serial.print("Water Pump Status: Enabled");
+            Serial1.print(5);
+          } else {
+            Serial.print("Water Pump Status: Disabled");
+            Serial1.print(6);
           }
         }
       }

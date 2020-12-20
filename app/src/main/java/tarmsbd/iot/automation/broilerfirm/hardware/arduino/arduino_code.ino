@@ -20,35 +20,33 @@ void setup() {
 void loop() { // run over and over
   if (Serial.available()) {
     int response = Serial.read();
-    Serial.println(response);
-
     switch (response) {
-      case 48: digitalWrite(FAN, LOW);
-        Serial.println("FAN, HIGH");
+      case 49: digitalWrite(LIGHT, HIGH);
+        Serial.println("Light, On");
         break;
-      case 49: digitalWrite(FAN, HIGH);
-        Serial.println("FAN, LOW");
-        break;
-
-      case 51: digitalWrite(LIGHT, HIGH);
-        Serial.println("LIGHT, HIGH");
-        break;
-      case 52: digitalWrite(LIGHT, LOW);
-        Serial.println("LIGHT, LOW");
+      case 50: digitalWrite(LIGHT, LOW);
+        Serial.println("Light, Off");
         break;
 
-      case 53: digitalWrite(MOTOR, HIGH);
-        Serial.println("MOTOR, HIGH");
+      case 51: digitalWrite(MOTOR, HIGH);
+        Serial.println("Motor, On");
         break;
-      case 54: digitalWrite(MOTOR, LOW);
-        Serial.println("MOTOR, LOW");
+      case 52: digitalWrite(MOTOR, LOW);
+        Serial.println("Motor, Off");
         break;
 
-      case 55: digitalWrite(PUMP, HIGH);
-        Serial.println("PUMP, HIGH");
+      case 53: digitalWrite(PUMP, HIGH);
+        Serial.println("Water Pump, On");
         break;
-      case 56: digitalWrite(PUMP, LOW);
-        Serial.println("PUMP, LOW");
+      case 54: digitalWrite(PUMP, LOW);
+        Serial.println("Water Pump, Off");
+        break;
+
+      case 55: digitalWrite(FAN, HIGH);
+        Serial.println("FAN, ON");
+        break;
+      case 56: digitalWrite(FAN, LOW);
+        Serial.println("FAN, OFF");
         break;
     }
   }
