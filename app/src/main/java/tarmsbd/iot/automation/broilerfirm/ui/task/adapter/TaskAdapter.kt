@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_task.view.*
 import tarmsbd.iot.automation.broilerfirm.R
-import tarmsbd.iot.automation.broilerfirm.data.model.Task
+import tarmsbd.iot.automation.broilerfirm.data.model.TaskReminder
 
-class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskHolder>(DiffUtilCallback) {
+class TaskAdapter : ListAdapter<TaskReminder, TaskAdapter.TaskHolder>(DiffUtilCallback) {
     class TaskHolder constructor(private val view: View) : RecyclerView.ViewHolder(view) {
-        fun bindView(task: Task) {
-            view.task_title.text = task.name
-            view.task_subtitle.text = task.date.toString()
+        fun bindView(taskReminder: TaskReminder) {
+            view.task_title.text = taskReminder.name
+            view.task_subtitle.text = taskReminder.date.toString()
         }
     }
 
@@ -34,12 +34,12 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskHolder>(DiffUtilCallback) 
     }
 }
 
-object DiffUtilCallback : DiffUtil.ItemCallback<Task>() {
-    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+object DiffUtilCallback : DiffUtil.ItemCallback<TaskReminder>() {
+    override fun areItemsTheSame(oldItem: TaskReminder, newItem: TaskReminder): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+    override fun areContentsTheSame(oldItem: TaskReminder, newItem: TaskReminder): Boolean {
         return oldItem.id == newItem.id &&
                 oldItem.name == newItem.name &&
                 oldItem.createdAt == newItem.createdAt &&

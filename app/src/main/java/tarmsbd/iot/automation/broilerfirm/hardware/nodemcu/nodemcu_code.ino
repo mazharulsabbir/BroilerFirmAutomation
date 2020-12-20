@@ -282,14 +282,15 @@ void loop()
   }
 
   // upload thinkspeak data
-  if (millis() - sendTempDataPrevMillis > 5000)
+  if (millis() - sendTempDataPrevMillis > 2000)
   {
     sendTempDataPrevMillis = millis();
     writeTemperatureData();
   }
 
-  if (millis() - sendHumidityDataPrevMillis > 10000)
+  if (millis() - sendHumidityDataPrevMillis > 4000)
   {
+    sendTempDataPrevMillis = millis();
     sendHumidityDataPrevMillis = millis();
     writeHumidityData();
   }

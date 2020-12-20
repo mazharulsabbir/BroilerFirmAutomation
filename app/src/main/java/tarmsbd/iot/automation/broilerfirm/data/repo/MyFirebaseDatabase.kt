@@ -2,12 +2,13 @@ package tarmsbd.iot.automation.broilerfirm.data.repo
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import tarmsbd.iot.automation.broilerfirm.data.model.Device
 import tarmsbd.iot.automation.broilerfirm.data.model.DeviceData
-import tarmsbd.iot.automation.broilerfirm.data.model.Task
+import tarmsbd.iot.automation.broilerfirm.data.model.TaskReminder
 import tarmsbd.iot.automation.broilerfirm.utils.Resource
 import java.util.logging.Logger
 
@@ -96,18 +97,20 @@ object MyFirebaseDatabase {
         }
     }
 
-    fun addNewTask(task: Task) {
+    fun addNewTask(taskReminder: TaskReminder): Task<Void>? {
         user?.let { firebaseUser ->
             updateDeviceStatus.value = Resource.loading(null)
 
             val mRef = ref.child("user/${firebaseUser.uid}/task")
             val key = mRef.push().key!!
-            task.id = key
-            mRef.child(key).setValue(task.toMap())
+            taskReminder.id = key
+
+            return mRef.child(key).setValue(taskReminder.toMap())
         }
+        return null
     }
 
-    fun getAllTask(task: (List<Task>) -> Unit) {
+    fun getAllTask(task: (List<TaskReminder>) -> Unit) {
         user?.let { firebaseUser ->
             updateDeviceStatus.value = Resource.loading(null)
 
@@ -115,9 +118,9 @@ object MyFirebaseDatabase {
             mRef.orderByChild("date").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.hasChildren()) {
-                        val taskList = mutableListOf<Task>()
+                        val taskList = mutableListOf<TaskReminder>()
                         snapshot.children.forEach {
-                            val taskFromSnapshot = it.getValue(Task::class.java)
+                            val taskFromSnapshot = it.getValue(TaskReminder::class.java)
                             taskFromSnapshot?.let { mTask -> taskList.add(mTask) }
                         }
                         task(taskList)

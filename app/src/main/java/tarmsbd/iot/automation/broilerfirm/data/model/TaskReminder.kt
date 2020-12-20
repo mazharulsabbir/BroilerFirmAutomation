@@ -5,10 +5,10 @@ import com.google.firebase.database.IgnoreExtraProperties
 import java.util.*
 
 @IgnoreExtraProperties
-data class Task(
+data class TaskReminder(
     var id: String? = "Task",
     val name: String? = "No Name",
-    val date: Long? = Date().time,
+    val date: String? = "",
     val createdAt: Long? = Date().time,
     val isCompleted: Boolean? = false
 ) {
