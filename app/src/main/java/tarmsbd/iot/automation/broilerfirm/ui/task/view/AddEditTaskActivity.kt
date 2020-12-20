@@ -2,6 +2,7 @@ package tarmsbd.iot.automation.broilerfirm.ui.task.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,8 @@ class AddEditTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_task)
 
+        setSupportActionBar(toolbar)
+
         calender_view.minDate = Date().time
         selectedDate = Date().time.convertedDateTime()
 
@@ -30,7 +33,7 @@ class AddEditTaskActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun Long.convertedDateTime(): String = SimpleDateFormat(pattern).format(Date(this * 1000))
+    fun Long.convertedDateTime(): String = SimpleDateFormat(pattern).format(this)
 
     fun saveNewTask(view: View) {
         val title = task_title.editText!!.text.toString()
@@ -50,5 +53,10 @@ class AddEditTaskActivity : AppCompatActivity() {
             if (it.isSuccessful) super.onBackPressed()
             else Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home) super.onBackPressed()
+        return super.onOptionsItemSelected(item)
     }
 }
