@@ -1,5 +1,6 @@
 package tarmsbd.iot.automation.broilerfirm.data.repo
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
@@ -10,9 +11,12 @@ import tarmsbd.iot.automation.broilerfirm.data.model.Device
 import tarmsbd.iot.automation.broilerfirm.data.model.DeviceData
 import tarmsbd.iot.automation.broilerfirm.data.model.TaskReminder
 import tarmsbd.iot.automation.broilerfirm.utils.Resource
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.logging.Logger
 
 private const val TAG = "MyFirebaseDatabase"
+private const val pattern = "dd/MM/yyyy hh:mm:ss"
 
 object MyFirebaseDatabase {
     private val ref: DatabaseReference = FirebaseDatabase.getInstance().reference
@@ -21,6 +25,9 @@ object MyFirebaseDatabase {
     val currentUserData = MutableLiveData<Resource<Any?>>()
     val currentDeviceData = MutableLiveData<Resource<List<DeviceData>?>>()
     private val updateDeviceStatus = MutableLiveData<Resource<Device>>()
+
+    @SuppressLint("SimpleDateFormat")
+    fun Long.convertedDateTime(): String = SimpleDateFormat(pattern).format(this)
 
     init {
         Logger.getLogger("MyFirebaseDatabase").warning("==============Created=============")
@@ -87,6 +94,17 @@ object MyFirebaseDatabase {
             mRef.updateChildren(device.device.toMap())
                 .addOnCompleteListener { task ->
                     if (task.isComplete) {
+                        val notificationRef = ref.child("user/${firebaseUser.uid}/notifications")
+                        val mName = if(device.device.status!!) "${device.device.name} is turned on" else "${device.device.name} is turned off"
+
+                        val notification = tarmsbd.iot.automation.broilerfirm.data.model.Log(
+                            id = notificationRef.push().key,
+                            time = Date().time.convertedDateTime(),
+                            name = mName
+                        )
+
+                        notificationRef.push().updateChildren(notification.toMap())
+
                         updateDeviceStatus.value = Resource.success(device.device)
                     } else if (task.isCanceled) {
                         task.exception?.message?.let {
@@ -102,10 +120,13 @@ object MyFirebaseDatabase {
             updateDeviceStatus.value = Resource.loading(null)
 
             val mRef = ref.child("user/${firebaseUser.uid}/task")
-            val key = mRef.push().key!!
-            taskReminder.id = key
 
-            return mRef.child(key).setValue(taskReminder.toMap())
+            return if (taskReminder.id == null) {
+                val key = mRef.push().key!!
+                taskReminder.id = key
+                mRef.child(key).setValue(taskReminder.toMap())
+            } else mRef.child(taskReminder.id!!).updateChildren(taskReminder.toMap())
+
         }
         return null
     }

@@ -12,6 +12,7 @@ import tarmsbd.iot.automation.broilerfirm.data.repo.MyFirebaseDatabase
 import tarmsbd.iot.automation.broilerfirm.ui.task.adapter.TaskAdapter
 import tarmsbd.iot.automation.broilerfirm.ui.task.view.AddEditTaskActivity
 import tarmsbd.iot.automation.broilerfirm.ui.task.viewmodel.TaskViewModel
+import tarmsbd.iot.automation.broilerfirm.utils.OnItemClickListener
 import java.util.logging.Logger
 
 private const val TAG = "TaskFragment"
@@ -27,6 +28,14 @@ class TaskFragment : Fragment(R.layout.fragment_task) {
         MyFirebaseDatabase.getAllTask {
             Logger.getLogger(TAG).warning("Task: $it")
             taskAdapter.submitList(it)
+
+            taskAdapter.setOnItemClickListener(object :OnItemClickListener{
+                override fun onItemClicked(p: Int) {
+                    val updateTaskIntent = Intent(requireContext(),AddEditTaskActivity::class.java)
+                    updateTaskIntent.putExtra("update_task_intent_extra_task",it[p])
+                    startActivity(updateTaskIntent)
+                }
+            })
         }
 
         add_new_task.setOnClickListener {

@@ -28,7 +28,13 @@ class AddEditTaskActivity : AppCompatActivity() {
         selectedDate = Date().time.convertedDateTime()
 
         calender_view.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            selectedDate = "$dayOfMonth/$month/$year"
+            selectedDate = "$dayOfMonth/${month + 1}/$year"
+        }
+
+        val taskReminder = intent.getParcelableExtra<TaskReminder>("update_task_intent_extra_task")
+        taskReminder?.let {
+            task_btn.text = "Update Task"
+            task_title.editText!!.setText(it.name.toString())
         }
     }
 
@@ -50,13 +56,15 @@ class AddEditTaskActivity : AppCompatActivity() {
                 date = selectedDate
             )
         )?.addOnCompleteListener {
-            if (it.isSuccessful) super.onBackPressed()
-            else Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
+            if (it.isSuccessful) {
+                Toast.makeText(this, "Successfully Saved!", Toast.LENGTH_SHORT).show()
+                super.onBackPressed()
+            } else Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home) super.onBackPressed()
+        if (item.itemId == android.R.id.home) super.onBackPressed()
         return super.onOptionsItemSelected(item)
     }
 }

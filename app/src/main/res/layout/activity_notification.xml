@@ -20,4 +20,10 @@
             app:title="Notifications" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:id="@+id/recycler_view_notification"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_height="match_parent"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
