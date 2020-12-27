@@ -40,6 +40,7 @@ class DeviceAdapter(private val context: Context?) :
             device?.status?.let { status ->
                 view.device_status.text = if (status) "ON" else "OFF"
                 view.imageView.visibility = if (status) View.VISIBLE else View.INVISIBLE
+                if (status) view.card.setCardBackgroundColor(view.resources.getColor(R.color.colorPrimary))
             }
             view.on_off_time.text = device?.on_off_time?.let { dateTimeConverter(it) }
         }
