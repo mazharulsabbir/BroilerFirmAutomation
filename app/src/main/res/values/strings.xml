@@ -26,4 +26,5 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="status_change_time_hint">Status Change Time</string>
     <string name="add_new">Add New</string>
+    <string name="default_notification_channel_id">channel_id</string>
 </resources>

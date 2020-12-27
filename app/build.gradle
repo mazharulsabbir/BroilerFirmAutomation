@@ -54,6 +54,9 @@ dependencies {
     // firebase auth
     implementation 'com.google.firebase:firebase-auth:19.3.2'
 
+    // firebase cloud messaging
+    implementation 'com.google.firebase:firebase-messaging-ktx:21.0.1'
+
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.google.code.gson:gson:2.8.5'

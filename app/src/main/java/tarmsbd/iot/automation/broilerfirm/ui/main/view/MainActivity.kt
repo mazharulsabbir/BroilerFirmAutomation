@@ -1,6 +1,9 @@
 package tarmsbd.iot.automation.broilerfirm.ui.main.view
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -73,6 +76,23 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
                 return@setOnNavigationItemSelectedListener true
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Make sure you use the same channel id ("default" in this case)
+            // while creating notifications.
+            val channel = NotificationChannel(
+                resources.getString(R.string.default_notification_channel_id),
+                "Broiler Farm Automation",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+
+            channel.description = "Default Notification Channel"
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 

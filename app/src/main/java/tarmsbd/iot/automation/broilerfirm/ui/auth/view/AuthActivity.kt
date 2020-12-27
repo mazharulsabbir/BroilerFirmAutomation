@@ -1,17 +1,20 @@
 package tarmsbd.iot.automation.broilerfirm.ui.auth.view
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.ProgressDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_auth.*
 import tarmsbd.iot.automation.broilerfirm.R
 import tarmsbd.iot.automation.broilerfirm.ui.main.view.MainActivity
+
 
 class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
