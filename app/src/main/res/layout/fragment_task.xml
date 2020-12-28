@@ -8,6 +8,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         tools:listitem="@layout/item_task"
+        android:scrollbars="vertical"
         android:overScrollMode="never"
         android:id="@+id/recycler_view_task"
         android:layout_height="match_parent"/>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
+    android:scrollbars="vertical"
     android:layout_height="match_parent"
     tools:context=".ui.main.view.fragments.DevicesFragment">
 
@@ -16,7 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingLeft="20dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:paddingRight="20dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/root"
@@ -27,10 +31,21 @@
                     android:id="@+id/greetings"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="30dp"
                     app:layout_constraintEnd_toStartOf="@id/temp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/temp_unit" />
+
+                <TextView
+                    android:id="@+id/username"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="30dp"
+                    app:layout_constraintEnd_toStartOf="@id/temp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/greetings" />
 
                 <TextView
                     android:id="@+id/temp"
@@ -49,6 +64,16 @@
                     android:text="@string/celsius_symbol"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/temp" />
+
+                <TextView
+                    android:id="@+id/humidity_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="Humidity %"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/temp" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
@@ -86,9 +111,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:paddingBottom="50dp"
-                android:clipToPadding="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_device" />
         </LinearLayout>

@@ -35,7 +35,8 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
     override fun onResume() {
         super.onResume()
         FirebaseAuth.getInstance().currentUser?.let {
-            greetings.text = "Good Day,\n${it.displayName}"
+            greetings.text = "Good Day,"
+            username.text = it.displayName
         }
     }
 
@@ -44,7 +45,8 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         FirebaseAuth.getInstance().currentUser?.let {
-            greetings.text = "Good Day,\n${it.displayName}"
+            greetings.text = "Good Day,"
+            username.text = it.displayName
         }
 
         mainViewModel.getDevicesData.observe(viewLifecycleOwner, Observer { resource ->
@@ -144,7 +146,8 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
 
     private fun setupLineChartData(tempData: List<Float?>, humidity: List<Float?>) {
         line_chart_temp_humidity.visibility = View.VISIBLE
-        temp.text = tempData.last().toString()
+        temp.text = "${tempData.last() ?: 0}"
+        humidity_text.text = "Humidity ${humidity.last() ?: 0}%"
 
         var index = 5
         val tempEntry = mutableListOf<Entry>()

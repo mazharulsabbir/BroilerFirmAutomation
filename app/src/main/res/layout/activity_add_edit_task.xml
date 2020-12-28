@@ -32,11 +32,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:focusable="true"
+            android:focusedByDefault="true"
             android:hint="Task Title">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:defaultFocusHighlightEnabled="true"
+                android:focusable="true"
+                android:focusedByDefault="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -50,13 +55,15 @@
             android:id="@+id/calender_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="match_parent"
-            android:id="@+id/task_btn"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:onClick="saveNewTask"
-            android:text="Save Task" />
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/task_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:onClick="saveNewTask"
+        android:text="Save Task"
+        app:icon="@drawable/ic_baseline_save_24" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

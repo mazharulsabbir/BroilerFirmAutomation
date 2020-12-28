@@ -2,6 +2,7 @@ package tarmsbd.iot.automation.broilerfirm.ui.task.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -23,6 +24,8 @@ class AddEditTaskActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_edit_task)
 
         setSupportActionBar(toolbar)
+
+        task_title.editText!!.requestFocus()
 
         calender_view.minDate = Date().time
         selectedDate = Date().time.convertedDateTime()
@@ -59,7 +62,10 @@ class AddEditTaskActivity : AppCompatActivity() {
             if (it.isSuccessful) {
                 Toast.makeText(this, "Successfully Saved!", Toast.LENGTH_SHORT).show()
                 super.onBackPressed()
-            } else Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "saveNewTask: ", it.exception)
+            }
         }
     }
 
