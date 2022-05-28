@@ -1,7 +1,4 @@
 # BroilerFirmAutomation
-
-Connect Multi Path Stream
-
 ```c
 #if defined(ESP32)
 #include <WiFi.h>
@@ -45,12 +42,133 @@ String uid;
 
 unsigned long sendDataPrevMillis = 0;
 
-String parentPath = "/test/stream/data";
-String childPath[2] = {"/node1", "/node2"};
+String childPath[4] = {"/device1", "/device2", "/device3", "/device4"};
 
 int count = 0;
 
 volatile bool dataChanged = false;
+
+#include "DHT.h"
+#include <Wire.h>
+
+#define DHTPIN 2     // what pin we're connected to
+
+// Uncomment whatever type you're using!
+#define DHTTYPE DHT11   // DHT 11 
+
+// Initialize DHT sensor for normal 16mhz Arduino
+DHT dht(DHTPIN, DHTTYPE);
+
+unsigned long sendDhtDataPrevMillis = 0;
+
+// relay module pin
+int pin5 = D5;
+int pin6 = D6;
+int pin7 = D7;
+int pin8 = D8;
+// relay module pin ends
+
+void setupRelayModulePins() {
+  pinMode(pin5, OUTPUT); // relay switch pin mode which connected to D5
+  pinMode(pin6, OUTPUT); // relay switch pin mode which connected to D6
+  pinMode(pin7, OUTPUT); // relay switch pin mode which connected to D7
+  pinMode(pin8, OUTPUT); // relay switch pin mode which connected to D8
+
+  digitalWrite(pin5, HIGH);
+  digitalWrite(pin6, HIGH);
+  digitalWrite(pin7, HIGH);
+  digitalWrite(pin8, HIGH);
+  // connect vcc to vin and gnd to g on nodemcu
+
+  resetDeviceStatus();
+}
+
+void readWaterLevelSensorData() {
+  int waterLevelValue = analogRead(A0); // Water Level Sensor output pin connected A0
+  Serial.println(waterLevelValue);  // See the Value In Serial Monitor
+  delay(100);      // for timer
+
+  String parentPath = "/user/" + uid + "/firm_data/water-level";
+  FirebaseJson json;
+
+  json.set("value", waterLevelValue);
+
+  bool _write = false;
+
+  if (waterLevelValue > 400 && waterLevelValue < 500) {
+    // low
+    json.set("level", "low");
+    _write = true;
+  }  else if (waterLevelValue >= 500 && waterLevelValue < 550) {
+    // medium
+    json.set("level", "medium");
+    _write = true;
+  } else if (waterLevelValue >= 550) {
+    // full
+    json.set("level", "high");
+    _write = true;
+  } else {
+    _write = false;
+  }
+
+  if (Firebase.ready() && _write)
+  {
+    Serial.printf("Set water level sensor json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+  }
+}
+
+void readDhtSensorData() {
+  if (millis() - sendDhtDataPrevMillis > 2000)
+  {
+    sendDhtDataPrevMillis = millis();
+
+    // Reading temperature or humidity takes about 250 milliseconds!
+    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    float h = dht.readHumidity();
+    // Read temperature as Celsius
+    float t = dht.readTemperature();
+    // Read temperature as Fahrenheit
+    float f = dht.readTemperature(true);
+
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t) || isnan(f)) {
+      Serial.println("Failed to read from DHT sensor!");
+      return;
+    }
+
+    // Compute heat index
+    // Must send in temp in Fahrenheit!
+    float hi = dht.computeHeatIndex(f, h);
+
+    if (Firebase.ready())
+    {
+      String parentPath = "/user/" + uid + "/firm_data/dht11";
+      FirebaseJson json;
+
+      json.set("temp_c", t);
+      json.set("temp_f", f);
+      json.set("humidity", h);
+      json.set("heat_index", hi);
+
+      Serial.printf("Set dht11 sensor json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+    }
+  }
+}
+
+void resetDeviceStatus() {
+  if (Firebase.ready())
+  {
+    String parentPath = "/user/" + uid + "/firm_data/devices";
+    FirebaseJson json;
+
+    json.set("device1/status", false);
+    json.set("device2/status", false);
+    json.set("device3/status", false);
+    json.set("device4/status", false);
+
+    Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+  }
+}
 
 void streamCallback(MultiPathStreamData stream)
 {
@@ -60,7 +178,50 @@ void streamCallback(MultiPathStreamData stream)
   {
     if (stream.get(childPath[i]))
     {
-      Serial.printf("path: %s, event: %s, type: %s, value: %s%s", stream.dataPath.c_str(), stream.eventType.c_str(), stream.type.c_str(), stream.value.c_str(), i < numChild - 1 ? "\n" : "");
+      String _path = stream.dataPath.c_str();
+      String _result = stream.value.c_str();
+
+      if (_path == "/device1/status") {
+        Serial.println(_path);
+
+        if (_result == "true") {
+          Serial.println("Enabled!");
+          digitalWrite(pin5, LOW);
+        } else {
+          Serial.println("Disabled!");
+          digitalWrite(pin5, HIGH);
+        }
+      } else if (_path == "/device2/status") {
+        Serial.println(_path);
+
+        if (_result == "true") {
+          Serial.println("Enabled!");
+          digitalWrite(pin6, LOW);
+        } else {
+          Serial.println("Disabled!");
+          digitalWrite(pin6, HIGH);
+        }
+      } else if (_path == "/device3/status") {
+        Serial.println(_path);
+
+        if (_result == "true") {
+          Serial.println("Enabled!");
+          digitalWrite(pin7, LOW);
+        } else {
+          Serial.println("Disabled!");
+          digitalWrite(pin7, HIGH);
+        }
+      } else if (_path == "/device4/status") {
+        Serial.println(_path);
+
+        if (_result == "true") {
+          Serial.println("Enabled!");
+          digitalWrite(pin8, LOW);
+        } else {
+          Serial.println("Disabled!");
+          digitalWrite(pin8, HIGH);
+        }
+      }
     }
   }
 
@@ -127,7 +288,7 @@ void setup()
 
   Firebase.begin(&config, &auth);
 
-    // Getting the user UID might take a few seconds
+  // Getting the user UID might take a few seconds
   Serial.println("Getting User UID");
   while ((auth.token.uid) == "") {
     Serial.print('.');
@@ -150,71 +311,27 @@ void setup()
 
   // The MultiPathStream works as normal stream with the payload parsing function.
 
+  String parentPath = "/user/" + uid + "/firm_data/devices";
+
   if (!Firebase.beginMultiPathStream(stream, parentPath))
-    Serial.printf("sream begin error, %s\n\n", stream.errorReason().c_str());
+    Serial.printf("stream begin error, %s\n\n", stream.errorReason().c_str());
 
   Firebase.setMultiPathStreamCallback(stream, streamCallback, streamTimeoutCallback);
+  dht.begin();
 
-  /** Timeout options, below is default config.
-
-  //WiFi reconnect timeout (interval) in ms (10 sec - 5 min) when WiFi disconnected.
-  config.timeout.wifiReconnect = 10 * 1000;
-
-  //Socket begin connection timeout (ESP32) or data transfer timeout (ESP8266) in ms (1 sec - 1 min).
-  config.timeout.socketConnection = 30 * 1000;
-
-  //ESP32 SSL handshake in ms (1 sec - 2 min). This option doesn't allow in ESP8266 core library.
-  config.timeout.sslHandshake = 2 * 60 * 1000;
-
-  //Server response read timeout in ms (1 sec - 1 min).
-  config.timeout.serverResponse = 10 * 1000;
-
-  //RTDB Stream keep-alive timeout in ms (20 sec - 2 min) when no server's keep-alive event data received.
-  config.timeout.rtdbKeepAlive = 45 * 1000;
-
-  //RTDB Stream reconnect timeout (interval) in ms (1 sec - 1 min) when RTDB Stream closed and want to resume.
-  config.timeout.rtdbStreamReconnect = 1 * 1000;
-
-  //RTDB Stream error notification timeout (interval) in ms (3 sec - 30 sec). It determines how often the readStream
-  //will return false (error) when it called repeatedly in loop.
-  config.timeout.rtdbStreamError = 3 * 1000;
-
-  */
+  setupRelayModulePins();
 }
 
 void loop()
 {
-  
-  // Firebase.ready() should be called repeatedly to handle authentication tasks.
-
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
-  {
-    sendDataPrevMillis = millis();
-
-//    Serial.print("\nSet json...");
-
-    FirebaseJson json;
-
-    for (size_t i = 0; i < 10; i++)
-    {
-      json.set("node1/data", "v1");
-      json.set("node1/num", count);
-      json.set("node2/data", "v2");
-      json.set("node2/num", count * 3);
-      // The response is ignored in this async function, it may return true as long as the connection is established.
-      // The purpose for this async function is to set, push and update data instantly.
-//      Firebase.setJSONAsync(fbdo, parentPath, json);
-      Serial.printf("Set json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
-      count++;
-    }
-
-//    Serial.println("ok\n");
-  }
-
   if (dataChanged)
   {
     dataChanged = false;
+    Serial.println("Data Changed! \n");
     // When stream data is available, do anything here...
   }
+
+  readWaterLevelSensorData();
+  readDhtSensorData();
 }
 ```
