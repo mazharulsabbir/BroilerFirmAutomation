@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tarmsbd.iot.automation.broilerfirm">
+    package="qubictech.iot.automation.broilerfirm">
 
     <application
-        android:name=".ui.MyApp"
+        android:name="qubictech.iot.automation.broilerfirm.ui.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.task.view.AddEditTaskActivity"/>
-        <activity android:name=".ui.notification.view.NotificationActivity" android:parentActivityName=".ui.main.view.MainActivity" />
-        <activity android:name=".ui.main.view.AddEditDeviceActivity" />
-        <activity android:name=".ui.auth.view.AuthActivity">
+        <activity android:name="qubictech.iot.automation.broilerfirm.ui.task.view.AddEditTaskActivity"/>
+        <activity android:name="qubictech.iot.automation.broilerfirm.ui.notification.view.NotificationActivity" android:parentActivityName="qubictech.iot.automation.broilerfirm.ui.main.view.MainActivity" />
+        <activity android:name="qubictech.iot.automation.broilerfirm.ui.main.view.AddEditDeviceActivity" />
+        <activity android:name="qubictech.iot.automation.broilerfirm.ui.auth.view.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.view.MainActivity" />
+        <activity android:name="qubictech.iot.automation.broilerfirm.ui.main.view.MainActivity" />
         <service
-            android:name=".utils.FirebaseNotificationService"
+            android:name="qubictech.iot.automation.broilerfirm.utils.FirebaseNotificationService"
             android:exported="false"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>

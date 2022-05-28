@@ -1,5 +1,3 @@
-# BroilerFirmAutomation
-```c
 #if defined(ESP32)
 #include <WiFi.h>
 #include <FirebaseESP32.h>
@@ -61,7 +59,7 @@ volatile bool dataChanged = false;
 #define DHTPIN 2     // what pin we're connected to
 
 // Uncomment whatever type you're using!
-#define DHTTYPE DHT11   // DHT 11 
+#define DHTTYPE DHT11   // DHT 11
 
 // Initialize DHT sensor for normal 16mhz Arduino
 DHT dht(DHTPIN, DHTTYPE);
@@ -112,7 +110,7 @@ void readWaterLevelSensorData() {
     _write = true;
   } else if (waterLevelValue >= 220) {
     // full
-    json.set("level", "high");    
+    json.set("level", "high");
     digitalWrite(pin8, HIGH); // turn off water pump
     _write = true;
 
@@ -361,4 +359,3 @@ void loop()
   readWaterLevelSensorData();
   readDhtSensorData();
 }
-```

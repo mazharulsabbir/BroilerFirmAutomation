@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "910432105014",
+    "firebase_url": "https://imazharulsabbir.firebaseio.com",
+    "project_id": "imazharulsabbir",
+    "storage_bucket": "imazharulsabbir.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910432105014:android:701186066efc854f919e97",
+        "android_client_info": {
+          "package_name": "com.mazharulsabbir.flutter_firebase_provider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910432105014-8f28neubht6gm2go76jicua93nr5md0l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpYEskJ3jkLBVnFmM7N6TTgFaxwgw--n4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "910432105014-8f28neubht6gm2go76jicua93nr5md0l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910432105014:android:4b2e01f11402c322919e97",
+        "android_client_info": {
+          "package_name": "qubictech.iot.automation.broilerfirm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910432105014-8f28neubht6gm2go76jicua93nr5md0l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpYEskJ3jkLBVnFmM7N6TTgFaxwgw--n4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "910432105014-8f28neubht6gm2go76jicua93nr5md0l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
