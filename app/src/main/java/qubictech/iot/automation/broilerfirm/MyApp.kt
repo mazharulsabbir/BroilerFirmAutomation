@@ -1,4 +1,4 @@
-package qubictech.iot.automation.broilerfirm.ui
+package qubictech.iot.automation.broilerfirm
 
 import android.app.Application
 import com.google.firebase.database.FirebaseDatabase
