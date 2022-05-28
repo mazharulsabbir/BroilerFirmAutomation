@@ -28,7 +28,8 @@ object MyFirebaseDatabase {
     fun Long.convertedDateTime(): String = SimpleDateFormat(pattern).format(this)
 
     init {
-        Logger.getLogger("MyFirebaseDatabase").warning("==============Created=============")
+        Logger.getLogger("MyFirebaseDatabase")
+            .warning("==============Created=============")
         getCurrentData()
         getUserInfo()
     }
@@ -96,7 +97,7 @@ object MyFirebaseDatabase {
                         val mName =
                             if (device.device.status!!) "${device.device.name} is turned on" else "${device.device.name} is turned off"
 
-                        val notification = qubictech.iot.automation.broilerfirm.data.model.Log(
+                        val notification = Log(
                             id = notificationRef.push().key,
                             time = Date().time.convertedDateTime(),
                             name = mName
@@ -198,7 +199,6 @@ object MyFirebaseDatabase {
                 override fun onCancelled(p0: DatabaseError) {
                     Log.e(TAG, "onCancelled: ", p0.toException())
                 }
-
             })
         }
     }
