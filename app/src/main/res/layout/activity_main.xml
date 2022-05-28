@@ -8,8 +8,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFF">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -18,7 +17,7 @@
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:menu="@menu/menu"
             app:navigationIcon="@drawable/ic_settings_2_outline"
-            app:title="Smart Firm" />
+            app:title="Smart Firm"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

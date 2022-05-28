@@ -5,7 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 
 @IgnoreExtraProperties
 data class Device(
-    var id: Int?,
+    var id: Any?,
     var name: String?,
     var status: Boolean? = false,
     var on_off_time: Long? = null,

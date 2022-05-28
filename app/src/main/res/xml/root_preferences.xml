@@ -1,35 +1,36 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="User Info">
+    <PreferenceCategory
+        android:icon="@drawable/ic_baseline_edit_24"
+        app:title="User Info">
 
         <EditTextPreference
             android:icon="@drawable/ic_baseline_account_circle_24"
             app:key="username"
+            app:summary="Your Name"
             app:title="Full Name" />
 
         <EditTextPreference
             android:icon="@drawable/ic_baseline_alternate_email_24"
             app:key="email_address"
+            app:summary="Your email address"
             app:title="@string/email_address" />
-
-        <EditTextPreference
-            android:icon="@drawable/ic_outline_lock_24"
-            app:key="request_password_change"
-            app:summary="Update your existing password with new password"
-            app:title="Update Password" />
-
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory
+        app:isPreferenceVisible="false"
+        app:title="@string/sync_header">
 
         <SwitchPreferenceCompat
+            android:enabled="false"
             android:icon="@drawable/ic_baseline_sync_24"
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:key="sync"
             app:title="Sync Temperature &amp; Humidity" />
 
         <ListPreference
+            android:enabled="false"
             android:icon="@drawable/ic_baseline_timer_24"
             app:defaultValue="5"
             app:dependency="sync"
@@ -41,7 +42,15 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory>
+    <PreferenceCategory
+        android:icon="@drawable/ic_settings_2_outline"
+        app:title="Settings">
+        <EditTextPreference
+            android:icon="@drawable/ic_outline_lock_24"
+            app:key="request_password_change"
+            app:summary="Change your password!"
+            app:title="Update Password" />
+
         <Preference
             android:icon="@drawable/ic_baseline_exit_to_app_24"
             app:key="logout"
