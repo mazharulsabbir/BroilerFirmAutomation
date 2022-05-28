@@ -117,28 +117,31 @@ object MyFirebaseDatabase {
     fun getDht11Data(records: (List<Dht11Data?>) -> Unit) {
         user?.let { firebaseUser ->
             val mRef = ref.child("user/${firebaseUser.uid}/firm_data/dht11")
-            mRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.hasChildren()) {
-                        val dht11SensorData = mutableListOf<Dht11Data?>()
-                        snapshot.children.forEach { record ->
-                            val data = record.getValue(Dht11Data::class.java)
-                            try {
-                                data?.timestamp = record?.key?.toLong()
-                            } catch (e: NumberFormatException) {
-                                e.printStackTrace()
+            mRef
+                .limitToLast(30)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.hasChildren()) {
+                            val dht11SensorData = mutableListOf<Dht11Data?>()
+                            snapshot.children.forEach { record ->
+                                val data = record.getValue(Dht11Data::class.java)
+                                try {
+                                    data?.timestamp = record?.key?.toLong()
+                                } catch (e: NumberFormatException) {
+                                    e.printStackTrace()
+                                }
+                                dht11SensorData.add(data)
                             }
-                            dht11SensorData.add(data)
+
+                            records(dht11SensorData)
                         }
-
-                        records(dht11SensorData)
                     }
-                }
 
-                override fun onCancelled(p0: DatabaseError) {
-                    Log.d(TAG, "onCancelled: ${p0.message}")
-                }
-            })
+                    override fun onCancelled(p0: DatabaseError) {
+                        Log.d(TAG, "onCancelled: ${p0.message}")
+                    }
+                })
+
         }
     }
 

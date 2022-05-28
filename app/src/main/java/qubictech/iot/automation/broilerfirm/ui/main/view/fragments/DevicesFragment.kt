@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_devices.*
 import qubictech.iot.automation.broilerfirm.R
 import qubictech.iot.automation.broilerfirm.data.model.Device
 import qubictech.iot.automation.broilerfirm.data.model.DeviceData
+import qubictech.iot.automation.broilerfirm.data.model.Dht11Data
 import qubictech.iot.automation.broilerfirm.data.repo.MyFirebaseDatabase.getDht11Data
 import qubictech.iot.automation.broilerfirm.data.repo.MyFirebaseDatabase.getWaterLevelSensorData
 import qubictech.iot.automation.broilerfirm.ui.main.adapter.DeviceAdapter
@@ -79,6 +80,7 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
 
         getDht11Data {
             Log.d(TAG, "onViewCreated: getDht11Data-> ${it.size}")
+            setupLineChartData(it)
         }
 
         getWaterLevelSensorData {
@@ -113,44 +115,21 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
         }
     }
 
-    private fun setupLineChartData(tempData: List<Float?>, humidity: List<Float?>) {
+    private fun setupLineChartData(records: List<Dht11Data?>) {
         line_chart_temp_humidity.visibility = View.VISIBLE
-        temp.text = "${tempData.last() ?: 0}"
-        humidity_text.text = "Humidity ${humidity.last() ?: 0}%"
+        temp.text = "${records.last()?.temp_c ?: 0}"
+        humidity_text.text = "Humidity ${records.last()?.humidity ?: 0}"
 
-        var index = 5
         val tempEntry = mutableListOf<Entry>()
-        for (temp in tempData) {
-            temp?.let {
-                Entry(
-                    index.toFloat(),
-                    it
-                )
-            }?.let {
-                tempEntry.add(
-                    it
-                )
-            }
-
-            index += 5
-        }
-
-        index = 5
         val humidityEntry = mutableListOf<Entry>()
-        for (humidity1 in humidity) {
-            humidity1?.let {
-                Entry(
-                    index.toFloat(),
-                    it
-                )
-            }?.let {
-                humidityEntry.add(
-                    it
-                )
-            }
 
-            index += 5
+        records.forEachIndexed { index, record ->
+            record?.let { data ->
+                tempEntry.add(Entry(index.toFloat(), data.temp_c ?: 0F))
+                humidityEntry.add(Entry(index.toFloat(), data.humidity?.toFloat() ?: 0F))
+            }
         }
+
         val dataset1 = LineDataSet(
             tempEntry, "Temperature (°C)"
         )
@@ -169,9 +148,11 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
         val lineData = LineData(
             dataSets
         )
+        lineData.setValueTextColor(R.color.colorPrimary)
 
         val description = Description()
         description.text = "Temperature and Humidity data"
+        description.textColor = resources.getColor(R.color.colorPrimary)
         description.setPosition(0f, 0f)
 
         line_chart_temp_humidity.data = lineData

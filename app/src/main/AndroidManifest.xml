@@ -13,7 +13,8 @@
         <activity android:name="qubictech.iot.automation.broilerfirm.ui.task.view.AddEditTaskActivity"/>
         <activity android:name="qubictech.iot.automation.broilerfirm.ui.notification.view.NotificationActivity" android:parentActivityName="qubictech.iot.automation.broilerfirm.ui.main.view.MainActivity" />
         <activity android:name="qubictech.iot.automation.broilerfirm.ui.main.view.AddEditDeviceActivity" />
-        <activity android:name="qubictech.iot.automation.broilerfirm.ui.auth.view.AuthActivity">
+        <activity android:name="qubictech.iot.automation.broilerfirm.ui.auth.view.AuthActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
