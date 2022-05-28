@@ -8,6 +8,9 @@
 #include <FirebaseESP8266.h>
 #endif
 
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
 // Provide the token generation process info.
 #include <addons/TokenHelper.h>
 
@@ -36,6 +39,10 @@ FirebaseData stream;
 
 FirebaseAuth auth;
 FirebaseConfig config;
+
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 // Variable to save USER UID
 String uid;
@@ -95,18 +102,29 @@ void readWaterLevelSensorData() {
 
   bool _write = false;
 
-  if (waterLevelValue > 400 && waterLevelValue < 500) {
+  if (waterLevelValue > 100 && waterLevelValue < 150) {
     // low
     json.set("level", "low");
     _write = true;
-  }  else if (waterLevelValue >= 500 && waterLevelValue < 550) {
+  }  else if (waterLevelValue >= 150 && waterLevelValue < 220) {
     // medium
     json.set("level", "medium");
     _write = true;
-  } else if (waterLevelValue >= 550) {
+  } else if (waterLevelValue >= 220) {
     // full
-    json.set("level", "high");
+    json.set("level", "high");    
+    digitalWrite(pin8, HIGH); // turn off water pump
     _write = true;
+
+    if (Firebase.ready())
+    {
+      String parentPath2 = "/user/" + uid + "/firm_data/devices/device4";
+      FirebaseJson json;
+
+      json.set("/status", false);
+
+      Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath2.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+    }
   } else {
     _write = false;
   }
@@ -115,6 +133,13 @@ void readWaterLevelSensorData() {
   {
     Serial.printf("Set water level sensor json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
   }
+}
+
+// Function that gets current epoch time
+unsigned long getTime() {
+  timeClient.update();
+  unsigned long now = timeClient.getEpochTime();
+  return now;
 }
 
 void readDhtSensorData() {
@@ -142,7 +167,9 @@ void readDhtSensorData() {
 
     if (Firebase.ready())
     {
-      String parentPath = "/user/" + uid + "/firm_data/dht11";
+      int timestamp = getTime();
+
+      String parentPath = "/user/" + uid + "/firm_data/dht11/" + String(timestamp);
       FirebaseJson json;
 
       json.set("temp_c", t);
