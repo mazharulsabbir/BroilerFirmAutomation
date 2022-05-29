@@ -56,10 +56,10 @@ volatile bool dataChanged = false;
 #include "DHT.h"
 #include <Wire.h>
 
-#define DHTPIN 2     // what pin we're connected to
+#define DHTPIN 2 // what pin we're connected to
 
 // Uncomment whatever type you're using!
-#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT11 // DHT 11
 
 // Initialize DHT sensor for normal 16mhz Arduino
 DHT dht(DHTPIN, DHTTYPE);
@@ -73,7 +73,8 @@ int pin7 = D7;
 int pin8 = D8;
 // relay module pin ends
 
-void setupRelayModulePins() {
+void setupRelayModulePins()
+{
   pinMode(pin5, OUTPUT); // relay switch pin mode which connected to D5
   pinMode(pin6, OUTPUT); // relay switch pin mode which connected to D6
   pinMode(pin7, OUTPUT); // relay switch pin mode which connected to D7
@@ -88,10 +89,11 @@ void setupRelayModulePins() {
   resetDeviceStatus();
 }
 
-void readWaterLevelSensorData() {
+void readWaterLevelSensorData()
+{
   int waterLevelValue = analogRead(A0); // Water Level Sensor output pin connected A0
-  Serial.println(waterLevelValue);  // See the Value In Serial Monitor
-  delay(100);      // for timer
+  // Serial.println(waterLevelValue);      // See the Value In Serial Monitor
+  delay(100); // for timer
 
   String parentPath = "/user/" + uid + "/firm_data/water-level";
   FirebaseJson json;
@@ -100,15 +102,20 @@ void readWaterLevelSensorData() {
 
   bool _write = false;
 
-  if (waterLevelValue > 100 && waterLevelValue < 150) {
+  if (waterLevelValue > 100 && waterLevelValue < 150)
+  {
     // low
     json.set("level", "low");
     _write = true;
-  }  else if (waterLevelValue >= 150 && waterLevelValue < 220) {
+  }
+  else if (waterLevelValue >= 150 && waterLevelValue < 220)
+  {
     // medium
     json.set("level", "medium");
     _write = true;
-  } else if (waterLevelValue >= 220) {
+  }
+  else if (waterLevelValue >= 220)
+  {
     // full
     json.set("level", "high");
     digitalWrite(pin8, HIGH); // turn off water pump
@@ -123,7 +130,9 @@ void readWaterLevelSensorData() {
 
       Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath2.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
     }
-  } else {
+  }
+  else
+  {
     _write = false;
   }
 
@@ -134,19 +143,21 @@ void readWaterLevelSensorData() {
 }
 
 // Function that gets current epoch time
-unsigned long getTime() {
+unsigned long getTime()
+{
   timeClient.update();
   unsigned long now = timeClient.getEpochTime();
   return now;
 }
 
-void readDhtSensorData() {
-  if (millis() - sendDhtDataPrevMillis > 2000)
+void readDhtSensorData()
+{
+  if (millis() - sendDhtDataPrevMillis > 300000)
   {
     sendDhtDataPrevMillis = millis();
 
     // Reading temperature or humidity takes about 250 milliseconds!
-    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    // Sensor readings may also be up to 5 seconds 'old' (its a very slow sensor)
     float h = dht.readHumidity();
     // Read temperature as Celsius
     float t = dht.readTemperature();
@@ -154,7 +165,8 @@ void readDhtSensorData() {
     float f = dht.readTemperature(true);
 
     // Check if any reads failed and exit early (to try again).
-    if (isnan(h) || isnan(t) || isnan(f)) {
+    if (isnan(h) || isnan(t) || isnan(f))
+    {
       Serial.println("Failed to read from DHT sensor!");
       return;
     }
@@ -180,73 +192,115 @@ void readDhtSensorData() {
   }
 }
 
-void resetDeviceStatus() {
+void resetDeviceStatus()
+{
   if (Firebase.ready())
   {
-    String parentPath = "/user/" + uid + "/firm_data/devices";
+    String parentPath1 = "/user/" + uid + "/firm_data/devices/device1";
+    String parentPath2 = "/user/" + uid + "/firm_data/devices/device2";
+    String parentPath3 = "/user/" + uid + "/firm_data/devices/device3";
+    String parentPath4 = "/user/" + uid + "/firm_data/devices/device4";
+
     FirebaseJson json;
+    json.set("/status", false);
 
-    json.set("device1/status", false);
-    json.set("device2/status", false);
-    json.set("device3/status", false);
-    json.set("device4/status", false);
-
-    Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath1.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath2.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath3.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath4.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
   }
 }
 
-void streamCallback(MultiPathStreamData stream)
+void streamCallback(MultiPathStreamData result)
 {
   size_t numChild = sizeof(childPath) / sizeof(childPath[0]);
 
   for (size_t i = 0; i < numChild; i++)
   {
-    if (stream.get(childPath[i]))
+    if (result.get(childPath[i]))
     {
-      String _path = stream.dataPath.c_str();
-      String _result = stream.value.c_str();
+      String _path = result.dataPath.c_str();
 
-      if (_path == "/device1/status") {
-        Serial.println(_path);
+      FirebaseJson &json = stream.jsonObject();
+      size_t len = json.iteratorBegin();
 
-        if (_result == "true") {
-          Serial.println("Enabled!");
-          digitalWrite(pin5, LOW);
-        } else {
-          Serial.println("Disabled!");
-          digitalWrite(pin5, HIGH);
-        }
-      } else if (_path == "/device2/status") {
-        Serial.println(_path);
+      String key, value = "";
+      int type = 0;
 
-        if (_result == "true") {
-          Serial.println("Enabled!");
-          digitalWrite(pin6, LOW);
-        } else {
-          Serial.println("Disabled!");
-          digitalWrite(pin6, HIGH);
-        }
-      } else if (_path == "/device3/status") {
-        Serial.println(_path);
+      for (size_t i = 0; i < len; i++)
+      {
+        json.iteratorGet(i, type, key, value);
+        String _result = String(value);
 
-        if (_result == "true") {
-          Serial.println("Enabled!");
-          digitalWrite(pin7, LOW);
-        } else {
-          Serial.println("Disabled!");
-          digitalWrite(pin7, HIGH);
-        }
-      } else if (_path == "/device4/status") {
-        Serial.println(_path);
+        if (key == "status")
+        {
+          if (_path == "/device1")
+          {
+            Serial.println(_path);
 
-        if (_result == "true") {
-          Serial.println("Enabled!");
-          digitalWrite(pin8, LOW);
-        } else {
-          Serial.println("Disabled!");
-          digitalWrite(pin8, HIGH);
+            if (_result == "true")
+            {
+              Serial.println("Enabled!");
+              digitalWrite(pin5, LOW);
+            }
+            else
+            {
+              Serial.println("Disabled!");
+              digitalWrite(pin5, HIGH);
+            }
+          }
+          else if (_path == "/device2")
+          {
+            Serial.println(_path);
+
+            if (_result == "true")
+            {
+              Serial.println("Enabled!");
+              digitalWrite(pin6, LOW);
+            }
+            else
+            {
+              Serial.println("Disabled!");
+              digitalWrite(pin6, HIGH);
+            }
+          }
+          else if (_path == "/device3")
+          {
+            Serial.println(_path);
+
+            if (_result == "true")
+            {
+              Serial.println("Enabled!");
+              digitalWrite(pin7, LOW);
+            }
+            else
+            {
+              Serial.println("Disabled!");
+              digitalWrite(pin7, HIGH);
+            }
+          }
+          else if (_path == "/device4")
+          {
+            Serial.println(_path);
+
+            if (_result == "true")
+            {
+              Serial.println("Enabled!");
+              digitalWrite(pin8, LOW);
+            }
+            else
+            {
+              Serial.println("Disabled!");
+              digitalWrite(pin8, HIGH);
+            }
+          }
+          else
+          {
+            Serial.println(_path + _result);
+          }
         }
       }
+      json.iteratorEnd();
     }
   }
 
@@ -315,7 +369,8 @@ void setup()
 
   // Getting the user UID might take a few seconds
   Serial.println("Getting User UID");
-  while ((auth.token.uid) == "") {
+  while ((auth.token.uid) == "")
+  {
     Serial.print('.');
     delay(1000);
   }
