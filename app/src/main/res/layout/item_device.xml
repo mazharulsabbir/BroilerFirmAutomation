@@ -21,23 +21,35 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <ImageView
+            android:id="@+id/device_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_bulb_outline"
+            android:contentDescription="@string/device_icon" />
+
         <TextView
             android:id="@+id/device_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/light"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/device_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/light" />
 
         <ImageView
-            android:visibility="invisible"
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/enable_or_disable_status_icon"
             android:src="@drawable/ic_baseline_check_circle_outline_24"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/device_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/device_name" />
@@ -46,34 +58,47 @@
             android:id="@+id/device_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/off"
             android:textAllCaps="true"
             app:layout_constraintStart_toStartOf="@+id/device_name"
-            app:layout_constraintTop_toBottomOf="@+id/device_name" />
+            app:layout_constraintTop_toBottomOf="@+id/device_name"
+            tools:text="@string/off" />
 
         <TextView
             android:id="@+id/hint1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/status_change_time_hint"
             android:textAllCaps="false"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="@+id/device_status"
-            app:layout_constraintTop_toBottomOf="@+id/device_status" />
+            app:layout_constraintTop_toBottomOf="@+id/device_status"
+            android:text="@string/status_change_time_hint" />
 
         <TextView
             android:id="@+id/on_off_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/status_change_time_hint"
+            android:drawableStart="@drawable/ic_baseline_access_time_filled_24"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageButton"
             app:layout_constraintStart_toStartOf="@+id/hint1"
-            app:layout_constraintTop_toBottomOf="@+id/hint1" />
+            app:layout_constraintTop_toBottomOf="@+id/hint1"
+            tools:text="@string/status_change_time_hint" />
 
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:visibility="invisible"
+            style="@style/Widget.AppCompat.ActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/onclick_edit_the_device_details"
+            android:src="@drawable/ic_settings_2_outline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

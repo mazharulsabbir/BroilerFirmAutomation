@@ -27,4 +27,7 @@
     <string name="status_change_time_hint">Status Change Time</string>
     <string name="add_new">Add New</string>
     <string name="default_notification_channel_id">channel_id</string>
+    <string name="enable_or_disable_status_icon">Enable or Disable Status Icon</string>
+    <string name="onclick_edit_the_device_details">onclick edit the device details</string>
+    <string name="device_icon">device icon</string>
 </resources>

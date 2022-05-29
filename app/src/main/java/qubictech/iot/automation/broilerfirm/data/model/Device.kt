@@ -1,16 +1,19 @@
 package qubictech.iot.automation.broilerfirm.data.model
 
+import android.os.Parcelable
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
+import kotlinx.android.parcel.Parcelize
 
 @IgnoreExtraProperties
+@Parcelize
 data class Device(
-    var id: Any?,
+    var id: String?,
     var name: String?,
     var status: Boolean? = false,
     var on_off_time: Long? = null,
     var total_used_time: Long? = null
-) {
+) : Parcelable {
     constructor() : this(null, null, null, null, null) // required for firebase database
 
     @Exclude
