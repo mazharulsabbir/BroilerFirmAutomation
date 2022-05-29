@@ -10,13 +10,15 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import qubictech.iot.automation.broilerfirm.R
 import qubictech.iot.automation.broilerfirm.ui.main.adapter.FragmentsContainer
 import qubictech.iot.automation.broilerfirm.ui.main.view.fragments.DevicesFragment
 import qubictech.iot.automation.broilerfirm.ui.main.view.fragments.SettingsFragment
-import qubictech.iot.automation.broilerfirm.ui.task.view.fragments.TaskFragment
 import qubictech.iot.automation.broilerfirm.ui.notification.view.NotificationActivity
+import qubictech.iot.automation.broilerfirm.ui.task.view.fragments.TaskFragment
 
 private const val TAG = "MainActivity"
 

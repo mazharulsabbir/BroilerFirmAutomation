@@ -155,6 +155,12 @@ class DevicesFragment : Fragment(R.layout.fragment_devices) {
         description.textColor = resources.getColor(R.color.colorPrimary)
         description.setPosition(0f, 0f)
 
+        val legend = line_chart_temp_humidity.legend
+        legend.textColor = resources.getColor(R.color.colorPrimary)
+
+        line_chart_temp_humidity.axisLeft.axisMinimum = 0F
+        line_chart_temp_humidity.axisRight.axisMinimum = 0F
+
         line_chart_temp_humidity.data = lineData
         line_chart_temp_humidity.description = description
         line_chart_temp_humidity.invalidate() // refresh data

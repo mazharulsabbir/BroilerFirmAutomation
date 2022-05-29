@@ -119,7 +119,7 @@ object MyFirebaseDatabase {
         user?.let { firebaseUser ->
             val mRef = ref.child("user/${firebaseUser.uid}/firm_data/dht11")
             mRef
-                .limitToLast(30)
+                .limitToLast(15)
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.hasChildren()) {
