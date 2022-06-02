@@ -18,8 +18,8 @@
 #include <addons/RTDBHelper.h>
 
 /* 1. Define the WiFi credentials */
-#define WIFI_SSID "Software section"
-#define WIFI_PASSWORD "dft@123456"
+#define WIFI_SSID "Moin Khan"
+#define WIFI_PASSWORD "01717511288"
 
 // For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
 
@@ -30,8 +30,8 @@
 #define DATABASE_URL "https://imazharulsabbir.firebaseio.com" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
 
 /* 4. Define the user Email and password that alreadey registerd or added in your project */
-#define USER_EMAIL "admin@mazharulsabbir.com"
-#define USER_PASSWORD "admin@123"
+#define USER_EMAIL "moinkhan4363@gmail.com"
+#define USER_PASSWORD "01717511288"
 
 // Define Firebase Data object
 FirebaseData fbdo;
@@ -67,6 +67,7 @@ volatile bool dataChanged = false;
 DHT dht(DHTPIN, DHTTYPE);
 
 unsigned long sendDhtDataPrevMillis = 0;
+unsigned long sendWaterPumpPrevMillis = 0;
 
 // relay module pin
 int pin5 = D5;
@@ -88,13 +89,15 @@ void setupRelayModulePins()
   digitalWrite(pin8, HIGH);
   // connect vcc to vin and gnd to g on nodemcu
 
-  resetDeviceStatus();
+//  resetDeviceStatus();
 }
 
 void readWaterLevelSensorData()
 {
   int waterLevelValue = analogRead(A0); // Water Level Sensor output pin connected A0
-  // Serial.println(waterLevelValue);      // See the Value In Serial Monitor
+  
+  Serial.print("waterLevelValue: ");
+  Serial.println(waterLevelValue);      // See the Value In Serial Monitor
   delay(100); // for timer
 
   String parentPath = "/user/" + uid + "/firm_data/water-level";
@@ -104,34 +107,40 @@ void readWaterLevelSensorData()
 
   bool _write = false;
 
-  if (waterLevelValue > 100 && waterLevelValue < 150)
+  if (waterLevelValue > 0 && waterLevelValue < 100)
   {
     // low
     json.set("level", "low");
     _write = true;
   }
-  else if (waterLevelValue >= 150 && waterLevelValue < 220)
+  else if (waterLevelValue >= 100 && waterLevelValue < 250)
   {
     // medium
     json.set("level", "medium");
     _write = true;
   }
-  else if (waterLevelValue >= 220)
+  else if (waterLevelValue >= 250)
   {
     // full
     json.set("level", "high");
     digitalWrite(pin8, HIGH); // turn off water pump
     _write = true;
 
-    if (Firebase.ready())
-    {
-      String parentPath2 = "/user/" + uid + "/firm_data/devices/device4";
-      FirebaseJson json;
-
-      json.set("/status", false);
-
-      Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath2.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
-    }
+//    if (Firebase.ready() && millis() - sendDhtDataPrevMillis > 6000)
+//    {
+//      sendWaterPumpPrevMillis = millis();
+//      String parentPath2 = "/user/" + uid + "/firm_data/devices/device4";
+//      FirebaseJson json;
+//
+//      int timestamp = getTime();
+//
+//      json.set("/id", "device4");
+//      json.set("/name", "Water Pump");
+//      json.set("/status", false);
+//      json.set("/on_off_time",timestamp);
+//
+//      Serial.printf("Set device json... %s\n", Firebase.RTDB.setJSON(&fbdo, parentPath2.c_str(), &json) ? "ok" : fbdo.errorReason().c_str());
+//    }
   }
   else
   {
@@ -154,7 +163,7 @@ unsigned long getTime()
 
 void readDhtSensorData()
 {
-  if (millis() - sendDhtDataPrevMillis > 300000)
+  if (millis() - sendDhtDataPrevMillis > 3000)
   {
     sendDhtDataPrevMillis = millis();
 
